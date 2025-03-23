@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300..900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.bright{
+    --bg-body:#e0e8ee;
+    --bg-card: white;
+    --text:#0B090A;
+    --navbar :#D3D3D3;
+    --smallcard:#a7b8bac8;
+    --inputBg:#f3f4f5;
+    --border:black;
+}
+.dark{
+    --bg-body:#312d2f;
+    --bg-card: #000000;
+    --text: #F5F3F4;
+    --navbar :#161A1D;
+    --smallcard :#3A3F44;
+    --inputBg:#292c2e;
+    --border:#bdbaba;
+
+}
+.hidescroolbar{
+    scrollbar-width: none;
+    
+}
+
+.scrollbar::-webkit-scrollbar {
+    width: 3px;
+  }
+  .scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(53, 123, 128, 0.7); 
+    border-radius: 10px;
+  }
+  
+  .scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(76, 56, 187, 1);
+  }
+  

@@ -186,7 +186,7 @@ function GalleryPage() {
                           key={likeStatus[data._id]?.likeCount}
                           initial={{ y: 10, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -10, opacity: 0 }}
+                          exit={{rotate:360, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                           className="text-lg"
                         >
@@ -210,7 +210,7 @@ function GalleryPage() {
                           key={likeStatus[data._id]?.unlikeCount}
                           initial={{ y: 10, opacity: 0 }}
                           animate={{ y: 0, opacity: 1 }}
-                          exit={{ y: -10, opacity: 0 }}
+                          exit={{ rotate:360, opacity: 0 }}
                           transition={{ duration: 0.3 }}
                           className="text-lg"
                         >

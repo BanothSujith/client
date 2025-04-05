@@ -261,7 +261,7 @@ function VideoPage() {
                       key={videoData?.subscribersCount}
                       initial={{ y: 10, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
-                      exit={{ y: -10, opacity: 0 }}
+                      exit={{ rotate:360, opacity: 0 } }
                       transition={{ duration: 0.3 }}
                       className="text-sm font-semibold"
                     >
@@ -290,7 +290,7 @@ function VideoPage() {
                     key={likedCount}
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -10, opacity: 0 }}
+                    exit={{rotate:360, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="text-xl font-bold"
                   >
@@ -308,7 +308,7 @@ function VideoPage() {
                     key={dislikedCount}
                     initial={{ y: 10, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: -10, opacity: 0 }}
+                    exit={{ rotate:360, opacity: 0 }}
                     transition={{ duration: 0.3 }}
                     className="text-xl font-bold"
                   >

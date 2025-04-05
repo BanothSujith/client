@@ -5,15 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { BsCloudUpload } from "react-icons/bs";
 import Message from "../../utility/Message";
 
-const Spinner = () => (
-  <div className="flex justify-center items-center h-20">
-    <img
-      src="/carloader.webp"
-      alt="Loading..."
-      className="w-16 h-16 animate-spin"
-    />
-  </div>
-);
+
 const videoFormats = [
   "video/mp4",
   "video/webm",
@@ -32,7 +24,7 @@ function CreateVideoBlog() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!document.cookie.includes("token")) {
+    if (!localStorage.getItem("user")) {
       navigate("/login");
     }
   }, [navigate]);
@@ -69,6 +61,7 @@ function CreateVideoBlog() {
         setContent("");
         setCoverImg(null);
         setVideo(null);
+        navigate("/");
       } else {
         Message("Error creating blog", "error");
       }

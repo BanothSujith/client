@@ -15,7 +15,8 @@ function CreateImgBlog() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!document.cookie.includes("token")) {
+    if (!localStorage.getItem("user")) {
+      Message("Please login to create a blog.", "warning");
       navigate("/login");
     }
   }, [navigate]);
@@ -45,6 +46,7 @@ function CreateImgBlog() {
         setTitle("");
         setContent("");
         setCoverImg(null);
+        navigate("/");
       } else {
         Message("Creating blog failed.", "error");
       }

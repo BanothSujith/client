@@ -29,23 +29,26 @@ function Login() {
         { email: email.toLowerCase(), password },
         { withCredentials: true }
       );
-      const token = response.data.token;
-      const user = response.data.user;
-      if (token && user) {
-        Cookies.set("token", token, {
-          expires: 7,
-          secure: true,
-          sameSite: "None",
-        });
-        Cookies.set("user", JSON.stringify(user), {
-          expires: 7,
-          secure: true,
-          sameSite: "None",
-        });
-        window.location.reload();
+      console.log(response.data);
+      // const token = response.data.token;
+      // const user = response.data.user;
+      if (response.data?.message === "Login successful" && response.data?.user) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        // Cookies.set("token", token, {
+        //   expires: 7,
+        //   secure: true,
+        //   sameSite: "None",
+        // });
+        // Cookies.set("user", JSON.stringify(user), {
+        //   expires: 7,
+        //   secure: true,
+        //   sameSite: "None",
+        // });
         Message("Login successful! Redirecting...", "OK");
         setTimeout(() => {
           navigate("/");
+          window.location.reload();
+
         }, 1);
       } else {
         Message("Login successful but no token provided.", "warning");

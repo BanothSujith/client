@@ -17,7 +17,7 @@ import Message from "../../utility/Message";
 import { AnimatePresence, motion } from "framer-motion";
 
 function VideoPage() {
-  const location = useLocation();
+  // const location = useLocation();
   const { video } = useParams();
   const navigate = useNavigate();
   const [videoData, setVideoData] = useState(null);
@@ -33,53 +33,53 @@ function VideoPage() {
     (state) => state.videoPlaying.videos
   );
   const videoplayingRef = useRef(null);
-  useEffect(() => {
-    const video = videoplayingRef.current;
+  // useEffect(() => {
+  //   const video = videoplayingRef.current;
 
-    return () => {
-      if (!video) return;
-      const isVideoPlaying = (video) => {
-        return (
-          video &&
-          !video.paused &&
-          !video.ended &&
-          video.readyState > 2
-        );
-      };
-      const tryEnterPiP = async () => {
-        if (!document.pictureInPictureElement && !document.fullscreenElement && isVideoPlaying(video)) {
-          video.requestPictureInPicture().catch((err) => {
-            console.warn("Failed to enter PiP:", err);
-          });
-          video.play()
-        }
-      };
+  //   return () => {
+  //     if (!video) return;
+  //     const isVideoPlaying = (video) => {
+  //       return (
+  //         video &&
+  //         !video.paused &&
+  //         !video.ended &&
+  //         video.readyState > 2
+  //       );
+  //     };
+  //     const tryEnterPiP = async () => {
+  //       if (!document.pictureInPictureElement && !document.fullscreenElement && isVideoPlaying(video)) {
+  //         video.requestPictureInPicture().catch((err) => {
+  //           console.warn("Failed to enter PiP:", err);
+  //         });
+  //         video.play()
+  //       }
+  //     };
 
-      if (video.readyState >= 1) {
-        tryEnterPiP();
-      } else {
-        const onMetadataLoaded = () => {
-          tryEnterPiP();
-        };
-        video.addEventListener("loadedmetadata", onMetadataLoaded, {
-          once: true,
-        });
-      }
-    };
-  }, [location.pathname]);
+  //     if (video.readyState >= 1) {
+  //       tryEnterPiP();
+  //     } else {
+  //       const onMetadataLoaded = () => {
+  //         tryEnterPiP();
+  //       };
+  //       video.addEventListener("loadedmetadata", onMetadataLoaded, {
+  //         once: true,
+  //       });
+  //     }
+  //   };
+  // }, [location.pathname]);
 
-  // Exit Picture-in-Picture when arriving back at the video page
-  useEffect(() => {
-    const exitPiP = async () => {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture().catch((err) => {
-          console.warn("Failed to exit PiP:", err);
-        });
-      }
-    };
+  // // Exit Picture-in-Picture when arriving back at the video page
+  // useEffect(() => {
+  //   const exitPiP = async () => {
+  //     if (document.pictureInPictureElement) {
+  //       await document.exitPictureInPicture().catch((err) => {
+  //         console.warn("Failed to exit PiP:", err);
+  //       });
+  //     }
+  //   };
 
-    exitPiP();
-  }, [location.pathname]);
+  //   exitPiP();
+  // }, []);
 
   const relatedBlogs = filteredRelatedVideos?.filter((item) => {
     if (!videoData || item._id === videoData._id) return false;
@@ -108,12 +108,13 @@ function VideoPage() {
         setIsunliked(response.data.video.isUnliked);
         setDislikedCount(response.data.video.dislikeCount);
       } catch (error) {
-        Message(error.response?.data?.error || "An error occurred");
+        Message(error.response?.data?.error || "An error occurred", "warning");
+        navigate("/login");
       }
     };
 
     fetchVideo();
-  }, [video]);
+  }, []);
 
   const handleSubmit = async () => {
     if (!comment.trim()) return;
@@ -141,12 +142,15 @@ function VideoPage() {
     }
   };
   const handleSubscribe = async () => {
-    if (!Cookies.get("token")) return navigate("/login");
     const response = await axios.post(
       ` ${import.meta.env.VITE_APP_BACKEND_URI}/subscribe`,
       { channelId: videoData?.ownerId },
       { withCredentials: true }
     );
+    if(response.data.error === "Unauthorized, token not provided." || response.data.error === 'Invalid token.'){
+      Message('Please login to subscribe', 'Error');
+      return navigate('/login');
+    } 
     if (response.data.message === "Subscribed successfully") {
       setIsSubscribed(true);
       setVideoData((prev) => ({

@@ -27,7 +27,7 @@ function HomeCard({ item }) {
               <div className="w-8 h-8 bg-[var(--smallcard)] rounded-full animate-pulse absolute top-2 left-0 z-0" />
             )}
           <img
-            src={item.createdBy?.profile}
+            src={item.profile}
             alt={`Profile`}
             onLoad={() => setProfileLoading(false)}
             className={`w-8 h-8 aspect-square object-cover rounded-full ${
@@ -40,7 +40,7 @@ function HomeCard({ item }) {
 
         <div className="flex flex-col px-12 pb-2 gap-1 justify-start">
           <p className="text-sm text-gray-400 font-semibold line-clamp-1">
-            -{item.createdBy?.userName}
+            -{item?.userName}
           </p>
           <p className="text-[10px] line-clamp-1 flex gap-3">
             <span>{item.views} views</span>

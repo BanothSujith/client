@@ -20,7 +20,7 @@ function Navbar() {
   );
   const location =useLocation()
   const dispatch = useDispatch();
-  const user = Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
+  const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
   const handleToggle = () => {
     const newTheme = theme === "dark" ? "bright" : "dark";

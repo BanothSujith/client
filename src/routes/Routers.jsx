@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import ChangePassword from '../components/pages/ChangePasword';
@@ -14,11 +14,12 @@ const VideoPage = lazy(() => import('../components/pages/VideoPage'));
 const ProfilePage = lazy(() => import('../components/pages/Profile'));
 const GalleryPage = lazy(() => import('../components/pages/GalleryPage'));
 const ChangeProfile = lazy(() => import('../components/pages/ChangeProfile'));
+const token =localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null;
 
-const token = Cookies.get('token');
 const isAuthenticated = Boolean(token);
-// console.log('isAuthenticated', isAuthenticated);
+console.log('isAuthenticated', isAuthenticated);
 function Routers() {
+
   return (
     <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
       <Routes>

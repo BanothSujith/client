@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import Message from "../../utility/Message";
 import Loading3 from "./Loading3";
+import { useNavigate } from "react-router";
 
 function Register() {
   const [name, setName] = useState("");
@@ -11,7 +12,7 @@ function Register() {
   const [loading, setLoading] = useState(null);
   const [profile, setProfile] = useState("");
   const [coverImg, setCoverImg] = useState("");
-
+  const navigate = useNavigate()
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!name || !email || !phoneNo || !password || !profile) {
@@ -42,7 +43,7 @@ function Register() {
         Message("Registration successful! Redirecting to login...", "OK");
         setTimeout(() => {
           setLoading(false);
-          window.location.href = "/login";
+          navigate( "/login");
         }, 300);
       } else {
         Message(response.data?.message || "Registration failed.", "error");

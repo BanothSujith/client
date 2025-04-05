@@ -10,9 +10,14 @@ import { GrHistory } from "react-icons/gr";
 import defaultprofile from "/src/assets/defaultprofile.png";
 import { useNavigate } from "react-router";
 import { FaAngleDown } from "react-icons/fa";
-import { changeTheme, setChatBot, setSettingsPageRequest } from "../../reduxstore/slices";
+import {
+  changeTheme,
+  setChatBot,
+  setSettingsPageRequest,
+} from "../../reduxstore/slices";
 import Message from "../../utility/Message";
 import { motion, AnimatePresence } from "framer-motion";
+import axios from "axios";
 
 const menuItems = [
   { name: "Profile", icon: <MdOutlineAccountCircle /> },
@@ -25,26 +30,35 @@ const menuItems = [
 function Settingspage() {
   const navigate = useNavigate();
   const [user, setUser] = useState(
-    Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user"))
+      : null
   );
   const [showBlogType, setShowBlogType] = useState(false);
   const [showTheme, setshowtheme] = useState(false);
   const dispatch = useDispatch();
-  const handleLogout = () => {
-    Cookies.remove("token");
-    Cookies.remove("user");
-    setUser(null);
-    dispatch(setSettingsPageRequest());
-    Message("Logged Out Succesfully....!", "OK");
-    window.location.reload();
-
+  const handleLogout = async () => {
+    const response = await axios.post(
+      `${import.meta.env.VITE_APP_BACKEND_URI}/logout`,
+      {},
+      { withCredentials: true }
+    );
+    if (response.data?.message === "Logout successful") {
+      localStorage.removeItem("user");
+      setUser(null);
+      dispatch(setSettingsPageRequest());
+      Message("Logged Out Succesfully....!", "OK");
+      window.location.reload();
+    }
   };
 
   const handleClicks = (item, index) => {
-    if (index === 0) navigate(`/user/${user._id}`);
+    if (index === 0) {
+      dispatch(setSettingsPageRequest());
+      navigate(`/user/${user._id}`);
+    }
     if (item.navigateTo) {
       navigate(item.navigateTo);
-      dispatch(setSettingsPageRequest());
     }
     if (index === 1) {
       setShowBlogType(!showBlogType);
@@ -54,7 +68,7 @@ function Settingspage() {
       dispatch(setSettingsPageRequest());
       dispatch(setChatBot());
     }
-    if(index === 3){
+    if (index === 3) {
       navigate("/changepassword");
       dispatch(setSettingsPageRequest());
     }

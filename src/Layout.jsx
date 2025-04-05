@@ -76,7 +76,7 @@ function Layout() {
       <div className="w-full">{!hideLayout && <Navbar />}</div>
 
       <div className="h-full flex flex-col lg:flex-row-reverse justify-center lg:justify-end items-center">
-        <div className="relative w-full h-full ">
+        <div className="relative w-full h-full pb-12 ">
           <Routers />
 
           <Suspense

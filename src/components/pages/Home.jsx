@@ -25,10 +25,9 @@ function Home() {
       fetchedPages.current.add(page);
 
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_APP_BACKEND_URI}/blogs?page=${page}`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_URI}/blogs`, {
+          withCredentials: true,
+        });
         const data = response.data.blogs;
 
         if (data?.length === 0) {

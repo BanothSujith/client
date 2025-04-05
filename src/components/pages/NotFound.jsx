@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 function Not() {
   return (
     <div>Not found 
-        <Link to='/home' >home</Link>
+        <Link to='/' >home</Link>
     </div>
   )
 }

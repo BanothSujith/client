@@ -5,16 +5,6 @@ import { useDropzone } from "react-dropzone";
 import { BsCloudUpload } from "react-icons/bs";
 import Message from "../../utility/Message";
 
-const Spinner = () => (
-  <div className="flex justify-center items-center h-20">
-    <img
-      src="/carloader.webp"
-      alt="Loading..."
-      className="w-16 h-16 animate-spin"
-    />
-  </div>
-);
-
 const imageFormats = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 
 function CreateImgBlog() {
@@ -83,16 +73,19 @@ function CreateImgBlog() {
   });
 
   return (
-    <div className="p-4 flex flex-col gap-8 items-center h-full overflow-auto">
-      <h1 className="text-3xl capitalize text-center font-bold text-[var(--text)]">
-        upload image blog
-      </h1>
-      {loading && <Spinner />}
-      <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="flex justify-center items-center min-h-screen bg-[var(--bg-body)] text-[var(--text)]">
+      <form
+        onSubmit={handleSubmit}
+        className="relative bg-[var(--bg-card)] p-6 rounded-lg shadow-md w-96 space-y-4"
+      >
+          <div className="absolute top-1 right-1 bg-red-600 w-3 flex items-center justify-center text-white h-3 text-xs pb-[1px] rounded-full hover:bg-red-900 active:scale-95 transition-all duration-75 ease-linear cursor-pointer" onClick={()=>window.history.back()}>
+          x
+        </div>
+        <h2 className="text-2xl font-semibold text-center">Upload Image Blog</h2>
         {/* Thumbnail Upload */}
         <div
           {...getThumbnailRootProps()}
-          className={`w-[20rem] md:w-[32rem] border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition ${
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition ${
             isThumbnailDragActive
               ? "border-blue-500 bg-blue-100"
               : "border-[var(--border)] hover:bg-[var(--inputBg)]"
@@ -112,28 +105,24 @@ function CreateImgBlog() {
 
         {/* Title */}
         <div>
-          <label className="block text-xl tracking-wider text-[var(--text)] font-semibold">
-            Title
-          </label>
+          <label className="block font-medium">Title</label>
           <input
             type="text"
             required
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-3 border-2 border-[var(--border)] rounded-lg outline-none bg-transparent focus:bg-[var(--inputBg)] text-[var(--text)]"
+            className="w-full border p-2 rounded mt-1 text-[var(--text)] bg-transparent focus-within:bg-[var(--bg-body)]"
           />
         </div>
 
         {/* Description */}
         <div>
-          <label className="text-xl tracking-wider text-[var(--text)] font-semibold">
-            Description
-          </label>
+          <label className="block font-medium">Description</label>
           <textarea
             required
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full p-3 border-2 text-[var(--text)] border-[var(--border)] outline-none bg-transparent rounded-lg"
+            className="w-full border p-2 rounded mt-1 text-[var(--text)] bg-transparent focus-within:bg-[var(--bg-body)]"
             rows="4"
           ></textarea>
         </div>
@@ -141,10 +130,9 @@ function CreateImgBlog() {
         {/* Submit Button */}
         <button
           type="submit"
-          onClick={handleSubmit}
-          className="w-full border border-[#511616] text-[var(--text)] text-lg font-semibold py-3 rounded-xl hover:bg-[var(--bg-card)] active:scale-95 transition-all duration-95 ease-linear"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
         >
-          Upload
+          {loading? "Uploading...":"upload"}
         </button>
       </form>
     </div>

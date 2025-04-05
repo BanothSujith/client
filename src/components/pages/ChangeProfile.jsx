@@ -49,12 +49,6 @@ function ChangeProfile() {
         {
           headers: { "Content-Type": "multipart/form-data" },
           withCredentials: true,
-          onUploadProgress: (progressEvent) => {
-            const percent = Math.round(
-              (progressEvent.loaded * 100) / progressEvent.total
-            );
-            setUploadProgress(percent);
-          },
         }
       );
 
@@ -68,7 +62,6 @@ function ChangeProfile() {
       });
 
       setLoading(false);
-      setUploadProgress(100);
       Message(response.data.message, response.statusText);
       navigate(-1);
       dispatch(setSettingsPageRequest(true));
@@ -79,7 +72,15 @@ function ChangeProfile() {
   }
 
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className=" bg-[var(--bg-body)]  w-full h-full flex justify-center items-center">
+         
+    <div className="flex flex-col items-center gap-8 bg-[var(--bg-card)] justify-center p-12 rounded-2xl relative">
+    <div
+          className="absolute top-2 right-2 bg-red-600 w-3 flex items-center justify-center text-white h-3 text-xs pb-[1px] rounded-full hover:bg-red-900 active:scale-95 transition-all duration-75 ease-linear cursor-pointer"
+          onClick={() => window.history.back()}
+        >
+          x
+        </div>
       <h1 className="text-2xl font-semibold text-[var(--text)]">Change Profile</h1>
 
       {/* ✅ Drag & Drop Profile Upload */}
@@ -107,17 +108,14 @@ function ChangeProfile() {
         )}
       </div>
 
-      {loading && (
-          <p className="text-center mt-2 text-sm font-semibold text-gray-700">
-            {uploadProgress}% Uploaded
-          </p>
-      )}
+    
       <button
-        className="px-12 py-1 border rounded-lg text-[var(--text)] text-xl font-medium hover:bg-[var(--bg-card)] transition-all duration-75 ease-in border-[var(--border)] active:scale-95"
+        className="px-12 py-1 border rounded-lg text-[var(--text)] text-xl font-medium hover:bg-[var(--bg-body)] transition-all duration-75 ease-in border-[var(--border)] active:scale-95"
         onClick={handleformSubmit}
       >
         {loading ? <Loading3 /> : "Submit"}
       </button>
+    </div>
     </div>
   );
 }

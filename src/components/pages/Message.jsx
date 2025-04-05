@@ -15,7 +15,7 @@ function Message({ message, type="info" }) {
       animate={{ y: 0, opacity: 1, scale: 1 }}
       exit={{ y: 20, opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`rounded-xl px-6 py-3 max-w-72 text-lg font-medium leading-5 border-1  backdrop-blur-lg ${
+      className={`rounded-xl px-6 py-3 text-center w-full md:max-w-72 text-lg font-medium leading-5 border-1  backdrop-blur-lg ${
         bgColors[type] || bgColors.info
       }`}
     >

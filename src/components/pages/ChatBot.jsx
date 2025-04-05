@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { LuSendHorizontal } from "react-icons/lu";
+import { MdOutlineArrowBackIos } from "react-icons/md";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setChatBot } from "../../reduxstore/slices";
 
 const chatBot = [
   {
@@ -11,12 +14,14 @@ const chatBot = [
   },
 ];
 
-function ChatBot() {
+function ChatBot({ fullScreen, setFullScreen }) {
   const [promt, setPromt] = useState("");
   const [ispromtsend, setPromtsend] = useState(false);
   const [chat, setChat] = useState(chatBot);
   const chatContainerRef = useRef(null);
-
+  const dispatch = useDispatch();
+  const [isMobile, setIsMobile] = useState(window.innerWidth<500);
+console.log(isMobile)
   useEffect(() => {
     setTimeout(() => {
       if (chatContainerRef.current) {
@@ -46,36 +51,64 @@ function ChatBot() {
       let fullResponse = response.data.response
         .replace(/\*\*/g, "")
         .replace(/\*/g, "")
-        .replace(/\n/g, "\n\n"); 
+        .replace(/\n/g, "\n\n");
       let currentIndex = 0;
-      const typingInterval = setInterval(() => {
-        setChat((prevChat) =>
-          prevChat.map((msg, i) =>
-            i === prevChat.length - 1
-              ? { ...msg, received: fullResponse.slice(0, currentIndex + 1) }
-              : msg
-          )
-        );
+      const typingInterval = setInterval(
+        () => {
+          setChat((prevChat) =>
+            prevChat.map((msg, i) =>
+              i === prevChat.length - 1
+                ? { ...msg, received: fullResponse.slice(0, currentIndex + 1) }
+                : msg
+            )
+          );
 
-        currentIndex++;
-        if (currentIndex === fullResponse.length) {
-          clearInterval(typingInterval);
-          setPromtsend(false);
-        }
-      },//want typing speed add here no
-     );
-
+          currentIndex++;
+          if (currentIndex === fullResponse.length) {
+            clearInterval(typingInterval);
+            setPromtsend(false);
+          }
+        } //want typing speed add here no
+      );
     } catch (error) {
       console.error("Error fetching chatbot response:", error);
       setPromtsend(false);
     }
   };
-
+  const handlefullScreen = () => {
+    setFullScreen((prev) => !prev);
+  };
   return (
-    <div className="flex flex-col justify-between gap-2 bg-[var(--bg-card)] h-96 w-full px-4 py-2">
-      <h1 className="text-2xl font-semibold shadow-sm w-full text-center text-[var(--text)]">
-        Chat Bot
-      </h1>
+    <div
+      className={`flex flex-col justify-between  gap-2 bg-[var(--bg-card)] ${
+        fullScreen || isMobile ? "h-full" : "h-96"
+      } w-full px-2 py-2`}
+    >
+      <div className="flex items-center ">
+        <button className="text-xl active:scale-95 transition-all duration-75 ease-in pb-[2px] text-[var(--text)] " onClick={()=>dispatch(setChatBot())}>
+          <MdOutlineArrowBackIos />
+        </button>
+        <h1 className="text-2xl font-semibold shadow-sm w-full text-center text-[var(--text)]">
+          Chat Bot
+        </h1>
+        <button
+          className={`hidden md:block relative h-2 p-[5px] rounded-[2px] border-2 border-[var(--border)] ${
+            fullScreen ? "mx-4" : "mx-3"
+          } bg-[var(--bg-card)] `}
+          title={fullScreen?"min screen":"full Screen"}
+          onClick={handlefullScreen}
+        >
+          {fullScreen && (
+            <span className="absolute hidden md:block p-[5px] border-2 rounded-[2px] -top-[6.5px] left-[3px] border-[var(--border)]"></span>
+          )}
+        </button>
+        <button
+          className={`hidden md:block text-xl font-semibold text-[#ff2323] hover:text-[#aa3535] active:scale-95 transition-all duration-75 ease-in ${fullScreen?'pb-[8px]':"pb-[2px]"} `}
+          onClick={() => {dispatch(setChatBot()), setFullScreen(false)}}
+        >
+          x
+        </button>
+      </div>
       <div className="flex flex-col overflow-auto justify-start h-full">
         <div className="overflow-auto scrollbar" ref={chatContainerRef}>
           {chat.map((chat) => (
@@ -121,21 +154,23 @@ function ChatBot() {
         </div>
       </div>
 
-      <form className="flex w-full items-center gap-8" onSubmit={handlePromtsubmit}>
-        
+      <form
+        className={`flex w-full items-center  ${fullScreen?"px-12 gap-12":"px-2 gap-4"} `}
+        onSubmit={handlePromtsubmit}
+      >
         <input
           type="text"
           placeholder="Ask something here..."
           value={promt}
           onChange={(e) => setPromt(e.target.value)}
-          className="w-full h-8 rounded-md border-2 font-medium border-[var(--text)] text-[var(--text)] px-4 outline-none bg-transparent"
+          className="w-full h-12 rounded-full border-2 font-medium border-[var(--text)] text-[var(--text)] px-4 outline-none bg-transparent"
         />
         <button
-          disabled={ispromtsend}
+          disabled={ispromtsend || !promt}
           onClick={handlePromtsubmit}
           className="cursor-pointer disabled:cursor-not-allowed"
         >
-          <LuSendHorizontal className="text-2xl text-[var(--text)]" />
+          <LuSendHorizontal className="text-4xl text-[var(--text)]" />
         </button>
       </form>
     </div>

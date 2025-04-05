@@ -7,19 +7,18 @@ import Message from "../../utility/Message";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
 
     if (email === "" || password === "") {
-      setMessage("Email and password are required.");
+      Message("Email and password are required.", "warning");
       return;
     }
 
     if (!/\S+@\S+\.\S+/.test(email)) {
-      setMessage("Invalid email address.");
+      Message("Invalid email address.", "warning");
       return;
     }
 
@@ -32,37 +31,47 @@ function Login() {
       );
       const token = response.data.token;
       const user = response.data.user;
-      console.log("token", token)
       if (token && user) {
-        Cookies.set('token', token, { expires:7 ,secure:true, sameSite: 'None', });
-        Cookies.set('user', JSON.stringify(user),{expires:7 ,secure:true, sameSite: 'None',});
-        setMessage('Login successful! Redirecting...');
+        Cookies.set("token", token, {
+          expires: 7,
+          secure: true,
+          sameSite: "None",
+        });
+        Cookies.set("user", JSON.stringify(user), {
+          expires: 7,
+          secure: true,
+          sameSite: "None",
+        });
+        window.location.reload();
+        Message("Login successful! Redirecting...", "OK");
         setTimeout(() => {
           navigate("/");
         }, 1);
       } else {
-        setMessage("Login successful but no token provided.");
-        Message("Login successful but no token provided." , "warning");
+        Message("Login successful but no token provided.", "warning");
       }
-
     } catch (error) {
-      setMessage(error.response?.data?.error || "Something went wrong.");
-       Message(error.response?.data?.error , "error");
+      Message(error.response?.data?.error, "error");
     } finally {
       setLoading(false);
     }
-
   };
 
   return (
-    <div className="text-white h-screen flex items-center justify-center bg-cover bg-center bg-[url('https://your-image-url')]">
-      <div className="bg-[#85969bcd] border border-slate-600 rounded-md shadow-lg p-8 backdrop-filter backdrop-blur-md bg-opacity-30 relative">
+    <div className=" h-screen text-[var(--text)] flex items-center justify-center bg-cover bg-center bg-[url('https://your-image-url')]">
+      <div className="bg-[var(--bg-card)] border border-slate-600 rounded-md shadow-lg p-8 backdrop-filter backdrop-blur-md bg-opacity-30 relative">
+        <div
+          className="absolute top-1 right-1 bg-red-600 w-3 flex items-center justify-center text-white h-3 text-xs pb-[1px] rounded-full hover:bg-red-900 active:scale-95 transition-all duration-75 ease-linear cursor-pointer"
+          onClick={() => window.history.back()}
+        >
+          x
+        </div>
         <h1 className="text-4xl font-bold text-center">Login</h1>
         <form onSubmit={handleLogin}>
           <div className="relative my-4">
             <input
               type="email"
-              className="block w-72 py-2.5 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              className="block w-72 py-2.5 px-0 text-sm  bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=""
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -75,7 +84,7 @@ function Login() {
           <div className="relative my-4">
             <input
               type="password"
-              className="block w-72 py-2.5 px-0 text-sm text-white bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              className="block w-72 py-2.5 px-0 text-sm  bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=""
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -91,7 +100,7 @@ function Login() {
 
           <button
             type="submit"
-            className={`w-full mb-5 mt-5 text-[18px] rounded bg-blue-500 py-2 hover:bg-blue-600 transition-colors duration-300 ${
+            className={`w-full my-5 text-[18px]  rounded bg-blue-500 py-2 hover:bg-blue-600 transition-colors duration-300 ${
               loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={loading}
@@ -99,7 +108,6 @@ function Login() {
             {loading ? "Logging in..." : "LOGIN"}
           </button>
         </form>
-        {message && <p className="text-red-500 text-center mt-3">{message}</p>}
       </div>
     </div>
   );

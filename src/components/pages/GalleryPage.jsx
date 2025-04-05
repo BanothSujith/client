@@ -9,11 +9,14 @@ import axios from "axios";
 import { formatDistanceToNow } from "date-fns";
 import SkeletonPage from "./SkeltonHome";
 import Message from "../../utility/Message";
+import { useDispatch, useSelector } from "react-redux";
+import { setGalleryVideos } from "../../reduxstore/slices";
 
 function GalleryPage() {
-  const [galleryBlogs, setGalleryBlogs] = useState([]);
   const [likeStatus, setLikeStatus] = useState({}); 
   const [Loading,setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const galleryBlogs = useSelector((state)=>state.videoPlaying.galleryVideos) || [];
   useEffect(() => {
     const fetchGalleryBlogs = async () => {
       try {
@@ -25,7 +28,7 @@ function GalleryPage() {
         setLoading(false)
            Message(response.data.message,response.statusText);
         if (response.data && response.data.galleryBlogs) {
-          setGalleryBlogs(response.data.galleryBlogs);
+          dispatch(setGalleryVideos(response.data.galleryBlogs));
           
           const initialLikeStatus = {};
           response.data.galleryBlogs.forEach((post) => {
@@ -127,7 +130,7 @@ function GalleryPage() {
   };
   
   return (
-    <div className="w-full h-full p-2 overflow-auto">
+    <div className="w-full h-full p-2 pb-28 md:pb-36 lg:pb-20  overflow-auto">
       {
         Loading ? <SkeletonPage/> : (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-y-4 gap-x-4 items-center justify-center">
@@ -140,15 +143,15 @@ function GalleryPage() {
               {/* User Info */}
               <div className="flex gap-4 items-center text-[var(--text)]">
                 <img
-                  src={data.owner?.[0]?.profile || "https://via.placeholder.com/150"}
+                  src={data.owner?.profile || "https://via.placeholder.com/150"}
                   alt="Profile"
                   className="rounded-full w-8 aspect-square"
                 />
                 <p className="flex flex-col leading-none">
                   <span className="font-semibold text-xl leading-none">
-                    {data?.owner?.[0]?.userName || "Anonymous"}
+                    {data?.owner?.userName || "Anonymous"}
                   </span>
-                  <span className="text-xs">{data?.owner?.[0]?.subscribers} subscribers</span>
+                  <span className="text-xs">{data?.owner?.subscribers || 0} subscribers</span>
                 </p>
               </div>
 

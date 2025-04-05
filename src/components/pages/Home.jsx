@@ -6,11 +6,13 @@ import Message from "../../utility/Message";
 import { useDispatch, useSelector } from "react-redux";
 import { setVideos } from "../../reduxstore/slices";
 import { useNavigate } from "react-router";
-
+import { motion } from "framer-motion";
 function Home() {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [error, setError] = useState(null);
+  const fetchedPages = useRef(new Set());
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const observer = useRef(null);
@@ -19,13 +21,18 @@ function Home() {
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      if (fetchedPages.current.has(page)) return;
+      fetchedPages.current.add(page);
+
       try {
-        const response = await axios.get(`${import.meta.env.VITE_APP_BACKEND_URI}/blogs`, {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${import.meta.env.VITE_APP_BACKEND_URI}/blogs?page=${page}`,
+          { withCredentials: true }
+        );
         const data = response.data.blogs;
-        if (data.length === 0) {
-          setHasMore(false); 
+
+        if (data?.length === 0) {
+          setHasMore(false);
           return;
         }
         const uniqueBlogs = [...blogs, ...data].reduce((acc, blog) => {
@@ -34,9 +41,10 @@ function Home() {
           }
           return acc;
         }, []);
-        dispatch(setVideos(uniqueBlogs)); 
+
+        dispatch(setVideos(uniqueBlogs));
       } catch (error) {
-        Message(error.response?.data?.error || "Failed to fetch blogs");
+        setError(error.response?.data?.error || "Failed to fetch blogs");
       } finally {
         setLoading(false);
       }
@@ -45,6 +53,7 @@ function Home() {
     fetchBlogs();
   }, [page, dispatch]);
 
+  // ✅ Efficient Intersection Observer
   const lastBlogRef = useCallback(
     (node) => {
       if (!hasMore || !node) return;
@@ -66,7 +75,9 @@ function Home() {
   );
 
   return (
-    <div className="w-full h-full overflow-hidden flex justify-center items-start md:px-2 py-2">
+    <div className="w-full h-full overflow-hidden flex justify-center items-start md:px-2 pt-2 pb-16">
+      {error && <Message message={error} type="error" />}
+
       {loading && page === 1 ? (
         <div className="w-full h-full">
           <SkeletonPage />
@@ -74,14 +85,18 @@ function Home() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(16rem,1fr))] gap-6 w-full h-full justify-center items-start overflow-auto hidescroolbar">
           {blogs?.map((item, index) => (
-            <div
+            <motion.div
               key={item._id}
               className="w-full md:max-w-[22rem] mx-auto"
               ref={index === blogs.length - 1 ? lastBlogRef : null}
               onClick={() => navigate(`video/${item._id}`)}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              viewport={{ once: true, amount: 0.3 }} // Animate only once, when 30% visible
             >
               <HomeCard item={item} />
-            </div>
+            </motion.div>
           ))}
         </div>
       )}

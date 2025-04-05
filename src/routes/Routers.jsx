@@ -1,40 +1,41 @@
-import React from 'react'
-import {  Route, Routes, Navigate  } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import Home from '../components/pages//Home';
-import Login from '../components/pages/Login';
-import Logout from '../components/pages/Logout';
-import AdminPage from '../components/pages/AdminPage';
-import Register from '../components/pages/Register';
-import NotFound from '../components/pages/NotFound';
-import CreateVideoBlog from '../components/pages//CreateVideoBlog';
-import CreateImgBlog from '../components/pages/CreateImgBlog';
-import VideoPage from '../components/pages/VideoPage';
-import Profilepage from '../components/pages/Profile';
-import GalleryPage from '../components/pages/GalleryPage';
-import ChangeProfile from '../components/pages/ChangeProfile';
- 
-function Routers() {
-    const token = Cookies.get('token');
-    const isAuthenticated = Boolean(token)
-   
-  return (
+import ChangePassword from '../components/pages/ChangePasword';
 
-    <Routes>
-       <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
-      <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/" />} />
-      <Route path="/" element={ <Home /> } />
-      <Route path="/adminpage" element={isAuthenticated ? <AdminPage /> : <Navigate to="/login" />} />
-      <Route path="/logout" element={isAuthenticated ? <Logout /> : <Navigate to="/login" />} />
-      <Route path="/blogvideo" element={isAuthenticated ? <CreateVideoBlog /> : <Navigate to="/login" />} />
-      <Route path="/blogimg" element={isAuthenticated ? <CreateImgBlog /> : <Navigate to="/login" />} />
-      <Route path="/video/:video" element={<VideoPage/>} />
-      <Route path="/user/:userprofile" element={<Profilepage/>}/>
-      <Route path="/gallery" element={<GalleryPage/>} />
-      <Route path="/editprofile" element={<ChangeProfile/>} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
-  )
+const Home = lazy(() => import('../components/pages/Home'));
+const Login = lazy(() => import('../components/pages/Login'));
+
+const Register = lazy(() => import('../components/pages/Register'));
+const NotFound = lazy(() => import('../components/pages/NotFound'));
+const CreateVideoBlog = lazy(() => import('../components/pages/CreateVideoBlog'));
+const CreateImgBlog = lazy(() => import('../components/pages/CreateImgBlog'));
+const VideoPage = lazy(() => import('../components/pages/VideoPage'));
+const ProfilePage = lazy(() => import('../components/pages/Profile'));
+const GalleryPage = lazy(() => import('../components/pages/GalleryPage'));
+const ChangeProfile = lazy(() => import('../components/pages/ChangeProfile'));
+
+const token = Cookies.get('token');
+const isAuthenticated = Boolean(token);
+// console.log('isAuthenticated', isAuthenticated);
+function Routers() {
+  return (
+    <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={!isAuthenticated ? <Login /> : <Navigate to="/" />} />
+        <Route path="/register" element={!isAuthenticated ? <Register /> : <Navigate to="/" />} />
+        <Route path="/blogvideo" element={isAuthenticated ? <CreateVideoBlog /> : <Navigate to="/login" />} />
+        <Route path="/blogimg" element={isAuthenticated ? <CreateImgBlog /> : <Navigate to="/login" />} />
+        <Route path="/video/:video" element={<VideoPage />} />
+        <Route path="/user/:userprofile" element={<ProfilePage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/editprofile" element={<ChangeProfile />} />
+        <Route path="/changepassword" element={<ChangePassword/>}/>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Suspense>
+  );
 }
 
-export default Routers
+export default Routers;
